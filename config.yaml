@@ -1,0 +1,2 @@
+mlp_model_path: "./clip_lr4e4_gelu_rf2_r1_best.pt"
+stats-mean-std: "./statsMeanStd.txt"
