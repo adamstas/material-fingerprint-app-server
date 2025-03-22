@@ -8,4 +8,4 @@
 /dataSources.local.xml
 ../__pycache__/
 sqldialects.xml
-materials.db
+../materials.db
