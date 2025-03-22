@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.stats import pearsonr
 
-
 # todo otestovat jestli OK
 def calculate_similarity(v1: np.array, v2: np.array, alpha=0.5) -> float:
     

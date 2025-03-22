@@ -1,22 +1,20 @@
-import logging
-
 from fingeprint_analyzer import FingerPrintAnalyzer
 from image_validation import ImageValidator
 from PIL import Image
 import numpy as np
 
-# Configure logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler()
-    ]
-)
+# logging.basicConfig(
+#     level=logging.DEBUG,
+#     format='%(asctime)s - %(levelname)s - %(message)s',
+#     handlers=[
+#         logging.StreamHandler()
+#     ]
+# )
 
 def main():
 
-    image = Image.open('images/slot2.png')
+    image = Image.open('images/slot1.jpeg')
+    image = image.convert("RGB") # remove alpha channel that comes with Java Bitmap from Android app
     image = image.resize((500, 500))
     image = np.array(image)
 

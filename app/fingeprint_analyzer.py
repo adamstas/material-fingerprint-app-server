@@ -53,7 +53,7 @@ class FingerPrintAnalyzer:
         logging.debug("Initializing custom MLP model")
         # mlp model
 
-        with open('config.yaml', 'r') as file:
+        with open('app/config.yaml', 'r') as file:
             config = yaml.safe_load(file)
         model_path = config['mlp_model_path']
 
