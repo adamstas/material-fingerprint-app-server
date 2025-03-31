@@ -1,11 +1,17 @@
-from random import uniform
-
+from random import uniform, choice
 from sqlalchemy.orm import Session
 from app.db.database import engine
 from app.models.material import Material, MaterialCategory
 
-def populate_data():
+def populate_data(material_count = 496):
     session = Session(bind=engine)
+
+    # some random words for random names generator
+    adjectives = ["Bright", "Dull", "Smooth", "Rough", "Shiny", "Matte", "Light", "Heavy"]
+    nouns = ["Wonder", "Gem", "Wave", "Aura", "Spark", "Luster"]
+
+    def random_name():
+        return f"{choice(adjectives)} {choice(nouns)}" # todo ted obsahuje mezeru, povolime ji v apce?
 
     # for testing just some random values, later add real materials
     def random_characteristics():
@@ -30,30 +36,11 @@ def populate_data():
 
     default_materials = [
         Material(
-            name="OnlineTestMat1Fabric",
-            category=MaterialCategory.FABRIC,
+            name = random_name(),
+            category = choice(list(MaterialCategory)),
             **random_characteristics() # operator "**" unpacks the dictionary returned by random_characteristics() function so key-value pairs are passed as named arguments
-        ),
-        Material(
-            name="OnlineTestMat2Leather",
-            category=MaterialCategory.LEATHER,
-            **random_characteristics()
-        ),
-        Material(
-            name="OnlineTestMat3Wood",
-            category=MaterialCategory.WOOD,
-            **random_characteristics()
-        ),
-        Material(
-            name="OnlineTestMat4Metal",
-            category=MaterialCategory.METAL,
-            **random_characteristics()
-        ),
-        Material(
-            name="OnlineTestMat5Plastic",
-            category=MaterialCategory.PLASTIC,
-            **random_characteristics()
-        ),
+        )
+        for _ in range(material_count)
     ]
 
     session.add_all(default_materials)

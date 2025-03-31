@@ -13,17 +13,21 @@ import numpy as np
 
 def main():
 
-    image = Image.open('images/slot1.jpeg')
-    image = image.convert("RGB") # remove alpha channel that comes with Java Bitmap from Android app
-    image = image.resize((500, 500))
-    image = np.array(image)
+    image_specular = Image.open('../images/13_specular.jpg')
+    image_specular = image_specular.convert("RGB") # remove alpha channel that comes with Java Bitmap from Android app
+    image_specular = image_specular.resize((500, 500))
+    image_specular = np.array(image_specular)
 
-    validator = ImageValidator(image)
-    print(validator.validate().valid)
+    image_non_specular = Image.open('../images/13_non_specular.jpg')
+    image_non_specular = image_non_specular.convert("RGB")  # remove alpha channel that comes with Java Bitmap from Android app
+    image_non_specular = image_non_specular.resize((500, 500))
+    image_non_specular = np.array(image_non_specular)
 
+    # validator = ImageValidator(image)
+    # print(validator.validate().valid)
 
     analyzer = FingerPrintAnalyzer()
-    ratings = analyzer.get_material_ratings(image, image)
+    ratings = analyzer.get_material_ratings(image_non_specular, image_specular)
 
 
 
