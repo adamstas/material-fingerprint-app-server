@@ -28,7 +28,7 @@ def clip_preprocess(img:np.ndarray, sz_resize:int, sz_crop:int=224)->torch.Tenso
 		
 	# resize
 
-	print(type(img))
+	#print(type(img))
 
 	if(sz_resize):
 		min_sz = min(img.shape[:2])

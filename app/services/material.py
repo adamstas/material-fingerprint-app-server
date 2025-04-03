@@ -1,15 +1,14 @@
 from typing import Optional, List
-from PIL import Image
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 from app.fingeprint_analyzer import FingerPrintAnalyzer
 from app.models.material import Material
 import numpy as np
 from app.material_similarity import calculate_similarity
-from app.schemas.material import MaterialCreate, MaterialResponse
+from app.schemas.material import MaterialCreate
 from app.schemas.material_category import MaterialCategory
 from app.schemas.material_characteristics import MaterialCharacteristics
-from app.services.image import save_image, encode_image_to_base64_from_image
+from app.services.image import save_image, process_image_upload
 
 def get_material_vector_from_material(material: Material) -> np.array:
     return np.array([
@@ -84,12 +83,6 @@ def filter_materials(materials: List[Material], name: Optional[str], categories:
 
     return materials
 
-def process_image_upload(image_file: UploadFile) -> np.array:
-    image = Image.open(image_file.file)
-    image = image.convert("RGB") # remove alpha channel that comes with Java Bitmap from Android app
-    image = image.resize((500, 500))
-    return np.array(image)
-
 def calculate_material_characteristics_and_process_all(
         material_data: MaterialCreate,
         specular_image_file: UploadFile,
@@ -130,6 +123,7 @@ def calculate_material_characteristics_and_process_all(
         db.commit()
         db.refresh(material)  # reloads data from DB = material now has ID assigned from DB and so on
 
+        # todo dat cestu nekam do configu (jakoze cestu k obrazkum)
         specular_path = f"images/{material.id}_specular.jpg"
         non_specular_path = f"images/{material.id}_non_specular.jpg"
 
@@ -139,7 +133,6 @@ def calculate_material_characteristics_and_process_all(
     else:
         material.id = -1
 
-    image_base64 = encode_image_to_base64_from_image(Image.fromarray(specular_image)) # todo tady pozor ze kdyz to delam primo pro origo obrazek, tak je to 500x500 a neni to zkompriovany JPEG (Ale na to se vykaslat, stejne to pak bude pres endpoint a pro materialy, ktere neukladame, to proste nevratim)
-    return material, image_base64
+    return material
 
      # todo resit nejak kdyby image byly rozbity a analyza by nesla, tak aby se pak neulozilo neco nejak do DB ale image ne apod.?
