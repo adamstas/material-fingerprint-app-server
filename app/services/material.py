@@ -70,11 +70,11 @@ def calculate_similarity_using_id(material_id: int, db: Session): # in Python in
         return []
 
     target_vector = get_material_vector_from_material(target_material)
-    return calculate_similarity_for_vector(target_vector, db) #todo pozdeji lze vracet i tu similaritu a vypisovat ji v apce
+    return calculate_similarity_for_vector(target_vector, db)
 
-def calculate_similarity_using_characteristics(characteristics: MaterialCharacteristics, db: Session): # todo kontrolovat zda jsou hodnoty -2,75 do +2,75? asi neni potreba, proste uzivatel si muze najit podobny material k nejakemu fiktivnimu, ktery ma nerealne hodnoty v charakteristikach
+def calculate_similarity_using_characteristics(characteristics: MaterialCharacteristics, db: Session):
     target_vector = get_material_vector_from_characteristics(characteristics)
-    return calculate_similarity_for_vector(target_vector, db) #todo pozdeji lze vracet i tu similaritu a vypisovat ji v apce
+    return calculate_similarity_for_vector(target_vector, db)
 
 def filter_materials(materials: List[Material], name: Optional[str], categories: Optional[List[MaterialCategory]]):
     if name:
@@ -96,28 +96,27 @@ def calculate_material_characteristics_and_process_all(
     non_specular_image = process_image_upload(non_specular_image_file)
 
     analyzer = FingerPrintAnalyzer()
-    ratings = analyzer.get_material_ratings(non_specular_image, specular_image) # todo ktery je ktery?
+    ratings = analyzer.get_material_ratings(non_specular_image, specular_image)
 
-# todo ratings maji jine poradi nez moje statistiky,takze to projit a tady to spravne ulozit!
     material = Material(
         name = material_data.name,
         category = material_data.category,
-        characteristics_brightness = float(ratings.ratings[0]),
-        characteristics_color_vibrancy = float(ratings.ratings[1]),
-        characteristics_hardness = float(ratings.ratings[2]),
-        characteristics_checkered_pattern = float(ratings.ratings[3]),
-        characteristics_movement_effect = float(ratings.ratings[4]),
-        characteristics_multicolored = float(ratings.ratings[5]),
-        characteristics_naturalness = float(ratings.ratings[6]),
-        characteristics_pattern_complexity = float(ratings.ratings[7]),
-        characteristics_scale_of_pattern = float(ratings.ratings[8]),
-        characteristics_shininess = float(ratings.ratings[9]),
-        characteristics_sparkle = float(ratings.ratings[10]),
-        characteristics_striped_pattern = float(ratings.ratings[11]),
-        characteristics_surface_roughness = float(ratings.ratings[12]),
-        characteristics_thickness = float(ratings.ratings[13]),
-        characteristics_value = float(ratings.ratings[14]),
-        characteristics_warmth = float(ratings.ratings[15])
+        characteristics_brightness=float(ratings.ratings[5]),
+        characteristics_color_vibrancy=float(ratings.ratings[0]),
+        characteristics_hardness=float(ratings.ratings[8]),
+        characteristics_checkered_pattern=float(ratings.ratings[4]),
+        characteristics_movement_effect=float(ratings.ratings[9]),
+        characteristics_multicolored=float(ratings.ratings[13]),
+        characteristics_naturalness=float(ratings.ratings[11]),
+        characteristics_pattern_complexity=float(ratings.ratings[2]),
+        characteristics_scale_of_pattern=float(ratings.ratings[10]),
+        characteristics_shininess=float(ratings.ratings[6]),
+        characteristics_sparkle=float(ratings.ratings[7]),
+        characteristics_striped_pattern=float(ratings.ratings[3]),
+        characteristics_surface_roughness=float(ratings.ratings[1]),
+        characteristics_thickness=float(ratings.ratings[12]),
+        characteristics_value=float(ratings.ratings[14]),
+        characteristics_warmth=float(ratings.ratings[15])
     )
 
     if material_data.store_in_db:
@@ -135,8 +134,6 @@ def calculate_material_characteristics_and_process_all(
         material.id = -1
 
     return material
-
-     # todo resit nejak kdyby image byly rozbity a analyza by nesla, tak aby se pak neulozilo neco nejak do DB ale image ne apod.?
 
 def material_name_validation(name: str) -> tuple[bool, str]:
     if not name:

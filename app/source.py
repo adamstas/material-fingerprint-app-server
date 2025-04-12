@@ -7,8 +7,6 @@ from matplotlib import pyplot as plt
 import copy
 import yaml
 
-
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 

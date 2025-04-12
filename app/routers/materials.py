@@ -1,6 +1,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, HTTPException, UploadFile, Form, File
 from fastapi import Response
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from starlette import status
 from starlette.responses import FileResponse
@@ -21,7 +22,7 @@ def get_materials(
     categories: Optional[List[MaterialCategory]] = Query(None), # complex parameter, therefore must be Query(None) instead of just None
     db: Session = Depends(get_db)
 ):
-    query = db.query(Material)
+    query = db.query(Material).order_by(func.lower(Material.name))
 
     if name:
         query = query.filter(Material.name.contains(name))
@@ -70,8 +71,6 @@ def get_material_image(
         raise HTTPException(status_code=404, detail=f"Image for material with ID {material_id} not found")
 
     return FileResponse(file_path, media_type="image/jpeg")
-
-# todo zajistit aby jak tady na serveru, tak i v android apce, byly ty materialy vraceny defaultne ordered by name - i kdyz similar materials budou ordered by similarity, takze tam to upravit i v kodu v apce..
 
 @router.get("/materials/{material_id}/similar", response_model=List[MaterialResponse])
 def get_similar_materials(

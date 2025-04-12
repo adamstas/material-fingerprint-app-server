@@ -1,6 +1,6 @@
 from enum import Enum
 
-class MaterialCategory(str, Enum): # todo pochpit, proc je tu pro validaci dulezity string
+class MaterialCategory(str, Enum):
     FABRIC = "FABRIC"
     LEATHER = "LEATHER"
     WOOD = "WOOD"
