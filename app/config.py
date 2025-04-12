@@ -1,7 +1,7 @@
 import os
 # we have to distinguish between directories where images are stored
 # so during tests the real images are not replaced by test images
-IMAGES_DIR = os.environ.get("IMAGES_DIR", "images") #
+IMAGES_DIR = os.environ.get("IMAGES_DIR", "./images")
 
 # returns full image path
 def get_image_path(filename: str) -> str:

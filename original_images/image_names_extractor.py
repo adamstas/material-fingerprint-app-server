@@ -1,0 +1,43 @@
+import os
+import sys
+import re
+
+def list_image_names(directory_path):
+    print(f"Scanning directory: {directory_path}")
+    print("-" * 70)
+
+    # Check if directory exists
+    if not os.path.isdir(directory_path):
+        print(f"Error: Directory '{directory_path}' does not exist.")
+        return
+
+    # Get all files in the directory
+    files = sorted(os.listdir(directory_path))
+
+    # Filter for image files and extract material names
+    image_files = [f for f in files if f.lower().endswith(('.jpg', '.jpeg', '.png', '.gif'))]
+
+    if not image_files:
+        print("No image files found in the directory.")
+        return
+
+    print(f"Found {len(image_files)} image files:")
+    print("-" * 70)
+
+    for i, filename in enumerate(image_files, 1):
+        # Extract material name (assuming format: number_name.extension)
+        base_name = os.path.splitext(filename)[0]
+        match = re.match(r'\d+_(.*)', base_name)
+
+        if match:
+            material_name = match.group(1).replace('_', ' ')
+            print(f"{i}. File: {filename} → Material: {material_name}")
+        else:
+            print(f"{i}. File: {filename} → Could not extract material name")
+
+    print("-" * 70)
+
+if __name__ == "__main__":
+    # Use command line argument if provided, otherwise use a default path
+    directory_path = sys.argv[1] if len(sys.argv) > 1 else "./specular"
+    list_image_names(directory_path)

@@ -1,0 +1,16 @@
+color vibrancy
+surface roughness
+pattern complexity
+striped pattern
+checkered pattern
+brightness
+shininess
+sparkle
+hardness
+movement effect
+scale of pattern
+naturalness
+thickness
+multicolored
+value
+warmth
