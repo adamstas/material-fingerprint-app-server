@@ -125,7 +125,7 @@ def test_create_material_invalid_image(client: TestClient):
             "non_specular_image": ("non_specular.png", non_specular_image, "image/png"),
         },
         data={
-            "name": "Test material",
+            "name": "Test_material",
             "category": "METAL",
             "store_in_db": "true",
         },
@@ -143,14 +143,14 @@ def test_create_material_successful(test_images, client: TestClient):
             "non_specular_image": ("non_specular.png", non_specular_image, "image/png"),
         },
         data={
-            "name": "Test material",
+            "name": "Test_material",
             "category": "METAL",
             "store_in_db": "true",
         },
     )
     assert response.status_code == 201
     data = response.json()
-    assert data["name"] == "Test material"
+    assert data["name"] == "Test_material"
     assert data["category"] == "METAL"
     assert "id" in data
 
@@ -162,7 +162,7 @@ def test_get_materials_with_filter(client: TestClient):
             "non_specular_image": ("non_specular.png", create_test_image(), "image/png"),
         },
         data={
-            "name": "Filter test material",
+            "name": "Filter_test_material",
             "category": "WOOD",
             "store_in_db": "true",
         },
@@ -193,7 +193,7 @@ def test_get_material_image_successful(test_images, client: TestClient):
             "non_specular_image": ("non_specular.png", non_specular_image, "image/png"),
         },
         data={
-            "name": "Material for image test",
+            "name": "Material_for_test",
             "category": "METAL",
             "store_in_db": "true",
         },
@@ -224,7 +224,7 @@ def test_get_similar_materials_successful(client: TestClient):
             "non_specular_image": ("non_specular_red.png", red_non_specular, "image/png"),
         },
         data={
-            "name": "Red material for similarity test",
+            "name": "Red_test",
             "category": "PLASTIC",
             "store_in_db": "true",
         },
@@ -239,7 +239,7 @@ def test_get_similar_materials_successful(client: TestClient):
             "non_specular_image": ("non_specular_blue.png", blue_non_specular, "image/png"),
         },
         data={
-            "name": "Blue material for similarity test",
+            "name": "Blue_test",
             "category": "WOOD",
             "store_in_db": "true",
         },
@@ -272,7 +272,7 @@ def test_get_similar_materials_by_characteristics(client: TestClient):
             "non_specular_image": ("non_specular_red.png", red_non_specular, "image/png"),
         },
         data={
-            "name": "Red material for similarity test",
+            "name": "Red_material_test",
             "category": "PLASTIC",
             "store_in_db": "true",
         },
@@ -286,7 +286,7 @@ def test_get_similar_materials_by_characteristics(client: TestClient):
             "non_specular_image": ("non_specular_blue.png", blue_non_specular, "image/png"),
         },
         data={
-            "name": "Blue material for similarity test",
+            "name": "Blue_material_test",
             "category": "WOOD",
             "store_in_db": "true",
         },
@@ -356,7 +356,7 @@ def test_material_images_are_stored_correctly(client: TestClient, temp_image_dir
             "non_specular_image": ("non_specular.png", non_specular_image, "image/png"),
         },
         data={
-            "name": "Image storage test",
+            "name": "Image_storage_test",
             "category": "METAL",
             "store_in_db": "true",
         },

@@ -11,7 +11,8 @@ from app.schemas.material import MaterialRequest, MaterialResponse, MaterialCate
 from app.models.material import Material
 from app.services.image import get_material_response, image_validation, load_image
 from app.services.material import calculate_similarity_using_id, calculate_similarity_using_characteristics, \
-    filter_materials, calculate_material_characteristics_and_process_all
+    filter_materials, calculate_material_characteristics_and_process_all, material_name_validation
+
 router = APIRouter()
 
 @router.get("/materials", response_model=List[MaterialResponse])
@@ -40,11 +41,15 @@ def create_material(
     store_in_db: bool = Form(),
     db: Session = Depends(get_db)
 ):
+    name_validation_result = material_name_validation(name)
+    if not name_validation_result[0]:
+        raise HTTPException(status_code=400, detail="Invalid material name " + name + ": " + name_validation_result[1])
+
     if not image_validation(image=specular_image):
-        raise HTTPException(status_code=400, detail=f"Specular image is not a valid image.")
+        raise HTTPException(status_code=400, detail="Specular image is not a valid image.")
 
     if not image_validation(image=non_specular_image):
-        raise HTTPException(status_code=400, detail=f"Non specular image is not a valid image.")
+        raise HTTPException(status_code=400, detail="Non specular image is not a valid image.")
 
     material_data = MaterialRequest(name=name, category=category, store_in_db=store_in_db)
     material = calculate_material_characteristics_and_process_all(material_data, specular_image, non_specular_image, db)

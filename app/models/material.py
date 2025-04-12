@@ -1,5 +1,6 @@
 import sqlalchemy
 from sqlalchemy import Column, String, Enum, Float, Integer
+from sqlalchemy.orm import declarative_base
 from app.schemas.material import MaterialCategory
 
 Base = sqlalchemy.orm.declarative_base()

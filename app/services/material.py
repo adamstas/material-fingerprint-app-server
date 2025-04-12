@@ -137,3 +137,16 @@ def calculate_material_characteristics_and_process_all(
     return material
 
      # todo resit nejak kdyby image byly rozbity a analyza by nesla, tak aby se pak neulozilo neco nejak do DB ale image ne apod.?
+
+def material_name_validation(name: str) -> tuple[bool, str]:
+    if not name:
+        return False, "Name cannot be empty"
+    if len(name) < 3:
+        return False, "Name must be at least 3 characters long"
+    if len(name) > 20:
+        return False, "Name length cannot exceed 20 characters"
+    if " " in name:
+        return False, "Spaces are not allowed, use underscores"
+    if not all(c.isalnum() or c == '_' for c in name):
+        return False, "Only letters, numbers and underscores allowed"
+    return True, ""
