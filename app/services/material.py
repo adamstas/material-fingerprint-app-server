@@ -1,11 +1,13 @@
 from typing import Optional, List
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
+
+import app.config
 from app.fingeprint_analyzer import FingerPrintAnalyzer
 from app.models.material import Material
 import numpy as np
 from app.material_similarity import calculate_similarity
-from app.schemas.material import MaterialCreate
+from app.schemas.material import MaterialRequest
 from app.schemas.material_category import MaterialCategory
 from app.schemas.material_characteristics import MaterialCharacteristics
 from app.services.image import save_image, process_image_upload
@@ -84,7 +86,7 @@ def filter_materials(materials: List[Material], name: Optional[str], categories:
     return materials
 
 def calculate_material_characteristics_and_process_all(
-        material_data: MaterialCreate,
+        material_data: MaterialRequest,
         specular_image_file: UploadFile,
         non_specular_image_file: UploadFile,
         db: Session
@@ -123,12 +125,11 @@ def calculate_material_characteristics_and_process_all(
         db.commit()
         db.refresh(material)  # reloads data from DB = material now has ID assigned from DB and so on
 
-        # todo dat cestu nekam do configu (jakoze cestu k obrazkum)
-        specular_path = f"images/{material.id}_specular.jpg"
-        non_specular_path = f"images/{material.id}_non_specular.jpg"
+        specular_filename = app.config.get_specular_image_name(material.id)
+        non_specular_filename = app.config.get_non_specular_image_name(material.id)
 
-        save_image(specular_image, specular_path)
-        save_image(non_specular_image, non_specular_path)
+        save_image(specular_image, specular_filename)
+        save_image(non_specular_image, non_specular_filename)
 
     else:
         material.id = -1

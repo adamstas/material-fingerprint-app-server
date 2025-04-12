@@ -7,10 +7,10 @@ import yaml
 
 from typing import Tuple
 
-from source import get_plot_res, get_polar_plot, RATING_NAMES, RATING_CHANGE, MEANS, STDS
+from app.source import get_plot_res, get_polar_plot, RATING_NAMES, RATING_CHANGE, MEANS, STDS
 
-from veronika_features import StatisticalFeatures
-from fingerprint_clip import MLP, clip_preprocess
+from app.veronika_features import StatisticalFeatures
+from app.fingerprint_clip import MLP, clip_preprocess
 
 class ImageStats:
 

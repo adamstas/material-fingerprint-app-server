@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.db.database import engine
 from app.models.material import Material, MaterialCategory
 
-def populate_data(material_count = 496):
+def populate_data(material_count = 100):
     session = Session(bind=engine)
 
     # some random words for random names generator
@@ -11,7 +11,7 @@ def populate_data(material_count = 496):
     nouns = ["Wonder", "Gem", "Wave", "Aura", "Spark", "Luster"]
 
     def random_name():
-        return f"{choice(adjectives)} {choice(nouns)}" # todo ted obsahuje mezeru, povolime ji v apce?
+        return f"{choice(adjectives)}{choice(nouns)}" # todo ted obsahuje mezeru, povolime ji v apce?
 
     # for testing just some random values, later add real materials
     def random_characteristics():

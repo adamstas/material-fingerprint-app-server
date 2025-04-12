@@ -1,8 +1,9 @@
-from pathlib import Path
+import os
 from PIL import Image
 import numpy as np
-from fastapi import UploadFile, HTTPException
+from fastapi import UploadFile
 
+from app.config import get_image_path
 from app.models.material import Material
 from app.schemas.material import MaterialResponse
 from app.schemas.material_characteristics import MaterialCharacteristics
@@ -27,15 +28,19 @@ def image_validation(image: UploadFile) -> bool:
     return True
 
 
-def save_image(image: np.array, path: str):
+def save_image(image: np.array, filename: str):
     img = Image.fromarray(image)
-    img.save(path, "JPEG")
 
-def load_image(path: str):
-    image_path = Path(path)
-    if not image_path.is_file():
-        return None
-    return image_path
+    full_path = get_image_path(os.path.basename(filename))
+    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+
+    img.save(full_path, "JPEG")
+
+def load_image(filename: str):
+    full_path = get_image_path(os.path.basename(filename))
+    if os.path.exists(full_path):
+        return full_path
+    return None
 
 def get_material_response(material: Material) -> MaterialResponse:
     return MaterialResponse(
