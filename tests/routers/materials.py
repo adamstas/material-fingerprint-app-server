@@ -11,7 +11,7 @@ from app.main import app as application
 from app.db.database import get_db
 from app.models.material import Base
 import app.models
-import app.config as config
+import app.core.config as config
 
 
 @pytest.fixture(name="session")
@@ -72,12 +72,12 @@ def temp_image_dir(): # temporary directory for images during tests
     original_images_dir = config.IMAGES_DIR
 
     with tempfile.TemporaryDirectory() as temp_dir:
-        app.config.IMAGES_DIR = temp_dir
+        app.core.config.IMAGES_DIR = temp_dir
 
         yield temp_dir
 
         # reset to original after test
-        app.config.IMAGES_DIR = original_images_dir
+        app.core.config.IMAGES_DIR = original_images_dir
         # when this code block finishes
         # the temp directory is automatically deleted
 
@@ -365,8 +365,8 @@ def test_material_images_are_stored_correctly(client: TestClient, temp_image_dir
     assert response.status_code == 201
     material_id = response.json()["id"]
 
-    specular_path = os.path.join(temp_image_dir, app.config.get_specular_image_name(material_id))
-    non_specular_path = os.path.join(temp_image_dir, app.config.get_non_specular_image_name(material_id))
+    specular_path = os.path.join(temp_image_dir, app.core.config.get_specular_image_name(material_id))
+    non_specular_path = os.path.join(temp_image_dir, app.core.config.get_non_specular_image_name(material_id))
 
     assert os.path.exists(specular_path)
     assert os.path.exists(non_specular_path)

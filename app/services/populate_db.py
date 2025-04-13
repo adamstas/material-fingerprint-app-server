@@ -38,6 +38,7 @@ def populate_data(material_count = 74):
         Material(
             name = random_name(),
             category = choice(list(MaterialCategory)),
+            is_original = False,
             **random_characteristics() # operator "**" unpacks the dictionary returned by random_characteristics() function so key-value pairs are passed as named arguments
         )
         for _ in range(material_count)

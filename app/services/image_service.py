@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 from fastapi import UploadFile
 
-from app.config import get_image_path
+from app.core.config import get_image_path
 from app.models.material import Material
 from app.schemas.material import MaterialResponse
 from app.schemas.material_characteristics import MaterialCharacteristics

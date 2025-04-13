@@ -1,0 +1,2 @@
+mlp_model_path: "app/domain/fingerprinting/data/clip_lr4e4_gelu_rf2_r1_best.pt"
+stats-mean-std: "app/domain/fingerprinting/data/statsMeanStd.txt"

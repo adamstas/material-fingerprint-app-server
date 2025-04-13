@@ -6,12 +6,12 @@ from sqlalchemy.orm import Session
 from starlette import status
 from starlette.responses import FileResponse
 
-import app.config
+import app.core.config
 from app.db.database import get_db
 from app.schemas.material import MaterialRequest, MaterialResponse, MaterialCategory, SimilarMaterialsRequest
 from app.models.material import Material
-from app.services.image import get_material_response, image_validation, load_image
-from app.services.material import calculate_similarity_using_id, calculate_similarity_using_characteristics, \
+from app.services.image_service import get_material_response, image_validation, load_image
+from app.services.material_service import calculate_similarity_using_id, calculate_similarity_using_characteristics, \
     filter_materials, calculate_material_characteristics_and_process_all, material_name_validation
 
 router = APIRouter()
@@ -64,7 +64,7 @@ def create_material(
 def get_material_image(
         material_id: int
 ):
-    image_name = app.config.get_specular_image_name(material_id)
+    image_name = app.core.config.get_specular_image_name(material_id)
     file_path = load_image(image_name)
 
     if file_path is None:

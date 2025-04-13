@@ -1,5 +1,4 @@
-from fingeprint_analyzer import FingerPrintAnalyzer
-from image_validation import ImageValidator
+from app.domain.fingerprinting.fingeprint_analyzer import FingerPrintAnalyzer
 from PIL import Image
 import numpy as np
 
@@ -13,12 +12,12 @@ import numpy as np
 
 def main():
 
-    image_specular = Image.open('../images/13_specular.jpg')
+    image_specular = Image.open('../../../images/13_specular.jpg')
     image_specular = image_specular.convert("RGB") # remove alpha channel that comes with Java Bitmap from Android app
     image_specular = image_specular.resize((500, 500))
     image_specular = np.array(image_specular)
 
-    image_non_specular = Image.open('../images/13_non_specular.jpg')
+    image_non_specular = Image.open('../../../images/13_non_specular.jpg')
     image_non_specular = image_non_specular.convert("RGB")  # remove alpha channel that comes with Java Bitmap from Android app
     image_non_specular = image_non_specular.resize((500, 500))
     image_non_specular = np.array(image_non_specular)

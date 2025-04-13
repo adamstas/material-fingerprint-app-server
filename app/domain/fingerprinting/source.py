@@ -15,7 +15,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 MODEL_PARAM_1 = './modelParams'
 # Current version of STDs and MEANs used in standardization
 
-with open('app/config.yaml', 'r') as file:
+with open('app/domain/fingerprinting/config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 file = config['stats-mean-std']
 

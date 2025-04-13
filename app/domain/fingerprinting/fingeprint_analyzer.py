@@ -7,10 +7,10 @@ import yaml
 
 from typing import Tuple
 
-from app.source import get_plot_res, get_polar_plot, RATING_NAMES, RATING_CHANGE, MEANS, STDS
+from app.domain.fingerprinting.source import get_plot_res, get_polar_plot, RATING_CHANGE, MEANS, STDS
 
-from app.veronika_features import StatisticalFeatures
-from app.fingerprint_clip import MLP, clip_preprocess
+from app.domain.fingerprinting.veronika_features import StatisticalFeatures
+from app.domain.fingerprinting.fingerprint_clip import MLP, clip_preprocess
 
 class ImageStats:
 
@@ -53,7 +53,7 @@ class FingerPrintAnalyzer:
         logging.debug("Initializing custom MLP model")
         # mlp model
 
-        with open('app/config.yaml', 'r') as file:
+        with open('app/domain/fingerprinting/config.yaml', 'r') as file:
             config = yaml.safe_load(file)
         model_path = config['mlp_model_path']
 

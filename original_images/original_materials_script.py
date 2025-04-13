@@ -7,14 +7,14 @@ from PIL import Image
 from app.schemas.material_category import MaterialCategory
 
 # Paths configuration
-SPECULAR_FOLDER = "specular"
-NON_SPECULAR_FOLDER = "non-specular"
+SPECULAR_FOLDER = "original_images/specular"
+NON_SPECULAR_FOLDER = "original_images/non-specular"
 SERVER_IMAGE_DIR = "app/images"
 DB_PATH = "materials.db"
 TARGET_SIZE = (500, 500)  # Target image size
 
 # Load characteristics data
-with open("ratings.txt", "r") as f:
+with open("original_images/ratings.txt", "r") as f:
     characteristics_data = f.readlines()
 characteristics_list = []
 for line in characteristics_data:
@@ -151,7 +151,7 @@ def init_database() -> sqlite3.Connection:
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Create materials table
+    # Create materials table with is_original field
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS materials (
         id INTEGER PRIMARY KEY,
@@ -172,7 +172,8 @@ def init_database() -> sqlite3.Connection:
         characteristics_surface_roughness REAL NOT NULL,
         characteristics_thickness REAL NOT NULL,
         characteristics_value REAL NOT NULL,
-        characteristics_warmth REAL NOT NULL
+        characteristics_warmth REAL NOT NULL,
+        is_original BOOLEAN NOT NULL
     )
     ''')
 
@@ -273,8 +274,9 @@ def process_materials():
                 characteristics_thickness,
                 characteristics_multicolored,
                 characteristics_value,
-                characteristics_warmth
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                characteristics_warmth,
+                is_original
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 material_id,
                 sanitized_name,  # Use the sanitized name here
@@ -294,7 +296,8 @@ def process_materials():
                 char_data[12],  # thickness
                 char_data[13],  # multicolored
                 char_data[14],  # value
-                char_data[15]  # warmth
+                char_data[15],  # warmth
+                1  # Set is_original to True (1 in SQLite boolean)
             ))
 
         print(f"Processed material {material_id}: {sanitized_name} ({category})")

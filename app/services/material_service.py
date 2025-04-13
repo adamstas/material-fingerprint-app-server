@@ -2,15 +2,15 @@ from typing import Optional, List
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
-import app.config
-from app.fingeprint_analyzer import FingerPrintAnalyzer
+import app.core.config
+from app.domain.fingerprinting.fingeprint_analyzer import FingerPrintAnalyzer
 from app.models.material import Material
 import numpy as np
-from app.material_similarity import calculate_similarity
+from app.domain.similarity.material_similarity import calculate_similarity
 from app.schemas.material import MaterialRequest
 from app.schemas.material_category import MaterialCategory
 from app.schemas.material_characteristics import MaterialCharacteristics
-from app.services.image import save_image, process_image_upload
+from app.services.image_service import save_image, process_image_upload
 
 def get_material_vector_from_material(material: Material) -> np.array:
     return np.array([
@@ -101,6 +101,7 @@ def calculate_material_characteristics_and_process_all(
     material = Material(
         name = material_data.name,
         category = material_data.category,
+        is_original = False,
         characteristics_brightness=float(ratings.ratings[5]),
         characteristics_color_vibrancy=float(ratings.ratings[0]),
         characteristics_hardness=float(ratings.ratings[8]),
@@ -124,8 +125,8 @@ def calculate_material_characteristics_and_process_all(
         db.commit()
         db.refresh(material)  # reloads data from DB = material now has ID assigned from DB and so on
 
-        specular_filename = app.config.get_specular_image_name(material.id)
-        non_specular_filename = app.config.get_non_specular_image_name(material.id)
+        specular_filename = app.core.config.get_specular_image_name(material.id)
+        non_specular_filename = app.core.config.get_non_specular_image_name(material.id)
 
         save_image(specular_image, specular_filename)
         save_image(non_specular_image, non_specular_filename)
