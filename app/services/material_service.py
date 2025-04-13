@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 import app.core.config
 from app.domain.fingerprinting.fingeprint_analyzer import FingerPrintAnalyzer
+from app.domain.repository.material_repository import MaterialRepository
 from app.models.material import Material
 import numpy as np
 from app.domain.similarity.material_similarity import calculate_similarity
@@ -52,9 +53,9 @@ def get_material_vector_from_characteristics(material_characteristics: MaterialC
         material_characteristics.warmth
     ])
 
-def calculate_similarity_for_vector(target_vector: np.array, db: Session):
+def calculate_similarity_for_vector(target_vector: np.array, repository: MaterialRepository):
     similarities = []
-    for material in db.query(Material).all():
+    for material in repository.get_materials():
         vector = get_material_vector_from_material(material)
         similarity = calculate_similarity(target_vector, vector)
         similarities.append((material, similarity))
@@ -64,17 +65,17 @@ def calculate_similarity_for_vector(target_vector: np.array, db: Session):
 
     return [material for material, _ in similarities]
 
-def calculate_similarity_using_id(material_id: int, db: Session): # in Python int can handle large numbers like Long in Java
-    target_material = db.query(Material).get(material_id)
+def calculate_similarity_using_id(material_id: int, repository: MaterialRepository): # in Python int can handle large numbers like Long in Java
+    target_material = repository.get_material_by_id(material_id)
     if not target_material:
         return []
 
     target_vector = get_material_vector_from_material(target_material)
-    return calculate_similarity_for_vector(target_vector, db)
+    return calculate_similarity_for_vector(target_vector, repository)
 
-def calculate_similarity_using_characteristics(characteristics: MaterialCharacteristics, db: Session):
+def calculate_similarity_using_characteristics(characteristics: MaterialCharacteristics, repository: MaterialRepository):
     target_vector = get_material_vector_from_characteristics(characteristics)
-    return calculate_similarity_for_vector(target_vector, db)
+    return calculate_similarity_for_vector(target_vector, repository)
 
 def filter_materials(materials: List[Material], name: Optional[str], categories: Optional[List[MaterialCategory]]):
     if name:
@@ -89,7 +90,7 @@ def calculate_material_characteristics_and_process_all(
         material_data: MaterialRequest,
         specular_image_file: UploadFile,
         non_specular_image_file: UploadFile,
-        db: Session
+        repository: MaterialRepository
 ) -> (Material, str):
 
     specular_image = process_image_upload(specular_image_file)
@@ -121,9 +122,7 @@ def calculate_material_characteristics_and_process_all(
     )
 
     if material_data.store_in_db:
-        db.add(material)
-        db.commit()
-        db.refresh(material)  # reloads data from DB = material now has ID assigned from DB and so on
+        material = repository.add_material(material)
 
         specular_filename = app.core.config.get_specular_image_name(material.id)
         non_specular_filename = app.core.config.get_non_specular_image_name(material.id)

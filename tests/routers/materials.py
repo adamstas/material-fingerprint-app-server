@@ -7,6 +7,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 import os
+
+from app.db.repository.repository_factory import get_material_repository
+from app.db.repository.sqlite_material_repository import SQLiteMaterialRepository
 from app.main import app as application
 from app.db.database import get_db
 from app.models.material import Base
@@ -39,9 +42,12 @@ def session_fixture():
         session.close()
         Base.metadata.drop_all(bind=engine)
 
+@pytest.fixture(name="repository")
+def repository_fixture(session):
+    return SQLiteMaterialRepository(session)
 
 @pytest.fixture(name="client")
-def client_fixture(session):
+def client_fixture(repository, session):
     def override_get_db():
         try:
             yield session
@@ -50,8 +56,15 @@ def client_fixture(session):
 
     application.dependency_overrides[get_db] = override_get_db
 
+    def override_get_repository():
+        return repository
+
+    application.dependency_overrides[get_material_repository] = override_get_repository
+
     with TestClient(application) as test_client:
         yield test_client
+
+    application.dependency_overrides = {}
 
 def create_test_image():
     file = io.BytesIO()

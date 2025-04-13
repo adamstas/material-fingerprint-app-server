@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.db.database import engine
 from app.models.material import Material, MaterialCategory
 
-def populate_data(material_count = 74):
+def populate_data(material_count = 1):
     session = Session(bind=engine)
 
     # some random words for random names generator

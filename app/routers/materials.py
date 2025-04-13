@@ -1,15 +1,13 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, HTTPException, UploadFile, Form, File
 from fastapi import Response
-from sqlalchemy import func
-from sqlalchemy.orm import Session
 from starlette import status
 from starlette.responses import FileResponse
 
 import app.core.config
-from app.db.database import get_db
+from app.db.repository.repository_factory import get_material_repository
+from app.domain.repository.material_repository import MaterialRepository
 from app.schemas.material import MaterialRequest, MaterialResponse, MaterialCategory, SimilarMaterialsRequest
-from app.models.material import Material
 from app.services.image_service import get_material_response, image_validation, load_image
 from app.services.material_service import calculate_similarity_using_id, calculate_similarity_using_characteristics, \
     filter_materials, calculate_material_characteristics_and_process_all, material_name_validation
@@ -20,17 +18,10 @@ router = APIRouter()
 def get_materials(
     name: Optional[str] = None,
     categories: Optional[List[MaterialCategory]] = Query(None), # complex parameter, therefore must be Query(None) instead of just None
-    db: Session = Depends(get_db)
+    repository: MaterialRepository = Depends(get_material_repository)
 ):
-    query = db.query(Material).order_by(func.lower(Material.name))
-
-    if name:
-        query = query.filter(Material.name.contains(name))
-
-    if categories: # if categories are null then returned materials can have any category
-        query = query.filter(Material.category.in_(categories))
-
-    return [get_material_response(material) for material in query.all()]
+    materials = repository.get_materials(name, categories)
+    return [get_material_response(material) for material in materials]
 
 @router.post("/materials", response_model=MaterialResponse, status_code=status.HTTP_201_CREATED)
 def create_material(
@@ -40,7 +31,7 @@ def create_material(
     name: str = Form(), # Form() specifies that name is expected to be in the body of the request
     category: MaterialCategory = Form(),
     store_in_db: bool = Form(),
-    db: Session = Depends(get_db)
+    repository: MaterialRepository = Depends(get_material_repository)
 ):
     name_validation_result = material_name_validation(name)
     if not name_validation_result[0]:
@@ -53,7 +44,7 @@ def create_material(
         raise HTTPException(status_code=400, detail="Non specular image is not a valid image.")
 
     material_data = MaterialRequest(name=name, category=category, store_in_db=store_in_db)
-    material = calculate_material_characteristics_and_process_all(material_data, specular_image, non_specular_image, db)
+    material = calculate_material_characteristics_and_process_all(material_data, specular_image, non_specular_image, repository)
 
     if not store_in_db:
         response.status_code = status.HTTP_200_OK
@@ -77,9 +68,9 @@ def get_similar_materials(
     material_id: int,
     name: Optional[str] = None,
     categories: Optional[List[MaterialCategory]] = Query(None),
-    db: Session = Depends(get_db)
+    repository: MaterialRepository = Depends(get_material_repository)
 ):
-    materials = calculate_similarity_using_id(material_id, db)
+    materials = calculate_similarity_using_id(material_id, repository)
     if not materials:
         raise HTTPException(status_code=404, detail=f"Material with ID {material_id} not found")
 
@@ -89,8 +80,8 @@ def get_similar_materials(
 @router.post("/materials/similar", response_model=List[MaterialResponse])
 def get_similar_materials_by_characteristics(
     request: SimilarMaterialsRequest,
-    db: Session = Depends(get_db)
+    repository: MaterialRepository = Depends(get_material_repository)
 ):
-    materials = calculate_similarity_using_characteristics(request.characteristics, db)
+    materials = calculate_similarity_using_characteristics(request.characteristics, repository)
     materials = filter_materials(materials, request.name, request.categories)
     return [get_material_response(material) for material in materials]
