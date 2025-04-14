@@ -1,3 +1,5 @@
+# whole code in fingerprinting package was created by Jiri Filip, Veronika Vilimovska and Daniel Pilar
+
 # implementation of the original statistical (veronika's) features (the 256px version, not 512)
 # parts of the code more or less directly copied from the initial Veronika's jupyter ntb
 

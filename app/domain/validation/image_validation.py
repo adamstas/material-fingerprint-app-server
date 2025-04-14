@@ -1,3 +1,5 @@
+# code created by Jiri Filip, Veronika Vilimovska and Daniel Pilar
+
 import numpy as np
 import cv2
 

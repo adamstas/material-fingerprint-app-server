@@ -1,3 +1,5 @@
+# whole code in fingerprinting package was created by Jiri Filip, Veronika Vilimovska and Daniel Pilar
+
 from app.domain.fingerprinting.fingeprint_analyzer import FingerPrintAnalyzer
 from PIL import Image
 import numpy as np

@@ -1,4 +1,4 @@
-# code for JF, calcs fingerprint from two frames usign clip and pretrained model
+# whole code in fingerprinting package was created by Jiri Filip, Veronika Vilimovska and Daniel Pilar
 
 import numpy as np
 import torch, torch.nn as nn
