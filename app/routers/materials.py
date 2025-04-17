@@ -12,9 +12,12 @@ from app.services.image_service import get_material_response, image_validation, 
 from app.services.material_service import calculate_similarity_using_id, calculate_similarity_using_characteristics, \
     filter_materials, calculate_material_characteristics_and_process_all, material_name_validation
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/materials",
+    tags=["Materials"]
+)
 
-@router.get("/materials", response_model=List[MaterialResponse])
+@router.get("", response_model=List[MaterialResponse])
 def get_materials(
     name: Optional[str] = None,
     categories: Optional[List[MaterialCategory]] = Query(None), # complex parameter, therefore must be Query(None) instead of just None
@@ -23,11 +26,34 @@ def get_materials(
     materials = repository.get_materials(name, categories)
     return [get_material_response(material) for material in materials]
 
-@router.post("/materials", response_model=MaterialResponse, status_code=status.HTTP_201_CREATED)
-def create_material(
+@router.post(
+    "",
+    response_model=MaterialResponse,
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        200: {
+            "model": MaterialResponse,
+            "description": "Material analysis successful, data NOT stored in database (store_in_db=False)"
+        },
+        201: {
+            "model": MaterialResponse,
+            "description": "Material analysis successful, data stored in database (store_in_db=True)"
+        },
+        400: {
+            "description": "Bad request - invalid material name or image format"
+        }
+    }
+)
+def analyse_material(
     response: Response,
-    specular_image: UploadFile = File(), # files are not part of Pydantic models (they are not JSONs), and therefore they have to be placed here
-    non_specular_image: UploadFile = File(),
+    specular_image: UploadFile = File(
+        ...,
+        description="Specular image of the material (JPEG or PNG)"
+    ), # files are not part of Pydantic models (they are not JSONs), and therefore they have to be placed here
+    non_specular_image: UploadFile = File(
+        ...,
+        description="Non specular image of the material (JPEG or PNG)"
+    ),
     name: str = Form(), # Form() specifies that name is expected to be in the body of the request
     category: MaterialCategory = Form(),
     store_in_db: bool = Form(),
@@ -51,8 +77,20 @@ def create_material(
 
     return get_material_response(material)
 
-@router.get("/materials/{material_id}/image/specular")
-def get_material_image(
+@router.get(
+    "/{material_id}/image/specular",
+    response_class=FileResponse,
+    responses={
+        200: {
+            "content": {"image/jpeg": {}},
+            "description": "Returns the specular image of the material as JPEG"
+        },
+        404: {
+            "description": "Image not found"
+        }
+    }
+)
+def get_material_specular_image(
         material_id: int
 ):
     image_name = app.core.config.get_specular_image_name(material_id)
@@ -63,7 +101,15 @@ def get_material_image(
 
     return FileResponse(file_path, media_type="image/jpeg")
 
-@router.get("/materials/{material_id}/similar", response_model=List[MaterialResponse])
+@router.get(
+    "/{material_id}/similar",
+    response_model=List[MaterialResponse],
+    responses={
+        404: {
+            "description": "Material with specified ID not found"
+        }
+    }
+)
 def get_similar_materials(
     material_id: int,
     name: Optional[str] = None,
@@ -77,7 +123,7 @@ def get_similar_materials(
     materials = filter_materials(materials, name, categories)
     return [get_material_response(material) for material in materials]
 
-@router.post("/materials/similar", response_model=List[MaterialResponse])
+@router.post("/similar", response_model=List[MaterialResponse])
 def get_similar_materials_by_characteristics(
     request: SimilarMaterialsRequest,
     repository: MaterialRepository = Depends(get_material_repository)
