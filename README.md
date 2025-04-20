@@ -69,7 +69,7 @@ The server includes automated tests in the tests folder that verify all API rout
 To run tests, use command:
 
 ```bash
-pytest tests/routers/materials.py
+pytest tests/routers/test_materials.py
 ```
 
 The tests should ensure all API endpoints function correctly. However, it is possible that not all use cases or edge cases have been tested.

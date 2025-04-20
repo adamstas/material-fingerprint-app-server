@@ -1,6 +1,5 @@
 from typing import Optional, List
 from fastapi import UploadFile
-from sqlalchemy.orm import Session
 
 import app.core.config
 from app.domain.fingerprinting.fingeprint_analyzer import FingerPrintAnalyzer
