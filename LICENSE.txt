@@ -1,0 +1,3 @@
+This code is subject to the rights and obligations arising from Czech Act No. 121/2000 Coll., Copyright Act, as amended. In accordance with Section 2373(2) of Czech Act No. 89/2012 Coll., Civil Code, as amended, the author grants a non-exclusive license to use this work, including all computer programs that are part of or attached to it and all their documentation (hereinafter collectively referred to as the "Work"), to all persons who wish to use the Work.
+
+Users are authorized to use the Work in any manner that does not diminish its value and for any purpose (including use for commercial purposes). This authorization is unlimited in time, territory, and quantity.
