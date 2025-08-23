@@ -97,7 +97,31 @@ def get_material_specular_image(
     file_path = load_image(image_name)
 
     if file_path is None:
-        raise HTTPException(status_code=404, detail=f"Image for material with ID {material_id} not found")
+        raise HTTPException(status_code=404, detail=f"Specular image for material with ID {material_id} not found")
+
+    return FileResponse(file_path, media_type="image/jpeg")
+
+@router.get(
+    "/{material_id}/image/non_specular",
+    response_class=FileResponse,
+    responses={
+        200: {
+            "content": {"image/jpeg": {}},
+            "description": "Returns the non specular image of the material as JPEG"
+        },
+        404: {
+            "description": "Image not found"
+        }
+    }
+)
+def get_material_non_specular_image(
+        material_id: int
+):
+    image_name = app.core.config.get_non_specular_image_name(material_id)
+    file_path = load_image(image_name)
+
+    if file_path is None:
+        raise HTTPException(status_code=404, detail=f"Non specular image for material with ID {material_id} not found")
 
     return FileResponse(file_path, media_type="image/jpeg")
 
