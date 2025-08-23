@@ -73,3 +73,9 @@ pytest tests/routers/test_materials.py
 ```
 
 The tests should ensure all API endpoints function correctly. However, it is possible that not all use cases or edge cases have been tested.
+
+## Acknowledgements
+
+This software was created with the support of the Faculty of Information Technology, Czech Technical University in Prague (FIT CTU) – fit.cvut.cz
+
+![FIT CTU logo](fit_logo.jpg)
