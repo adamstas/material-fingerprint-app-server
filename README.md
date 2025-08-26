@@ -34,12 +34,36 @@ pip install -r requirements/requirements.txt
 
 All dependencies should be installed from the `requirements/requirements.txt` file to ensure compatibility.
 
+## HTTPS Setup for Android App
+
+**Important:** To connect the server to the MatTag Android app, it **must run over HTTPS** with a valid SSL certificate. Without HTTPS, the app will not connect.
+
 ## How to Launch the Server
+
+Firstly it is needed to obtain an SSL certificate. In this README the free SSL certificate via Let’s Encrypt will be used.
+
+### Obtain a free SSL certificate via Let’s Encrypt
+
+```bash
+sudo apt update
+sudo apt install certbot
+sudo certbot certonly --standalone -d yourdomain.com
+```
+
+This will generate the certificate files:
+
+- `/etc/letsencrypt/live/yourdomain.com/fullchain.pem`
+- `/etc/letsencrypt/live/yourdomain.com/privkey.pem`
+
+### Launch the Server with HTTPS
 
 To launch the server in production mode, run the following command from the root folder of the project:
 
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+uvicorn app.main:app --host 0.0.0.0 --port 443 \
+    --ssl-keyfile /etc/letsencrypt/live/yourdomain.com/privkey.pem \
+    --ssl-certfile /etc/letsencrypt/live/yourdomain.com/fullchain.pem \
+    --workers 4
 ```
 
 This command:
@@ -47,9 +71,10 @@ This command:
 * Uses uvicorn to serve the FastAPI application
 * Loads the application from app/main.py (the app instance in that file)
 * Binds to all network interfaces (0.0.0.0) making it accessible from other devices
-* Runs on port 8000
+* Runs on port 443 which means that in MatTag app no port has to be specified
 * Creates 4 worker processes for handling concurrent requests
 
+Now your server is accessible at https://yourdomain.com and the Android app can connect securely.
 
 ## Documentation
 
