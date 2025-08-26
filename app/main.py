@@ -6,7 +6,7 @@ from app.db.database import engine
 app = FastAPI(
     title="MatTag Server",
     description="API for material fingerprinting and analysis",
-    version="0.7.0",
+    version="1.0",
     docs_url="/docs",
     redoc_url="/redoc",
 )
