@@ -4,6 +4,9 @@
 
 MatTag Server is a FastAPI server for material fingerprinting. The server supports a mobile application designed to create a visual identification of real-world materials by analyzing their visual attributes.
 
+The mobile app is fully described including its source code in its GitHub repository:  
+[material-fingerprint-app](https://github.com/adamstas/material-fingerprint-app)
+
 The system works with a machine learning model that predicts human evaluations of materials through a unified visual identifier - a vector of 16 visual attributes. This allows for the digital fingerprinting of physical materials, making it possible to compare, search, and filter materials based on their visual properties.
 
 Key features of the whole system (mobile app + server) include:
@@ -76,6 +79,10 @@ The tests should ensure all API endpoints function correctly. However, it is pos
 
 ## Acknowledgements
 
-This software was created with the support of the Faculty of Information Technology, Czech Technical University in Prague (FIT CTU) – fit.cvut.cz
+This software was created with the support of the Faculty of Information Technology, Czech Technical University in Prague (FIT CTU) – www.fit.cvut.cz
 
 ![FIT CTU logo](fit_logo.jpg)
+
+It was also developed with the support of the **Institute of Information Theory and Automation of the CAS (UTIA)**, public research institution – www.utia.cas.cz
+
+![UTIA logo](utia_logo.png)
